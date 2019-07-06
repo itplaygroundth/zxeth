@@ -1,0 +1,448 @@
+<template>
+    <b-container>
+        <div>
+            <b-navbar toggleable="lg" type="dark" variant="dark" class="fixed-top">
+                <b-navbar-brand href="#">ZXETH</b-navbar-brand>
+
+                <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+                <b-collapse id="nav-collapse" is-nav>
+                    <b-navbar-nav>
+                        <b-nav-item href="#">ตั้งค่าบอท</b-nav-item>
+                        <b-nav-item @click="setting()">แก้ไขข้อมูล</b-nav-item>
+                    </b-navbar-nav>
+
+                    <!-- Right aligned nav items -->
+                    <b-navbar-nav class="ml-auto">
+                        <b-nav-item-dropdown text="Lang" right>
+                            <b-dropdown-item href="#">EN</b-dropdown-item>
+                            <b-dropdown-item href="#">ES</b-dropdown-item>
+                            <b-dropdown-item href="#">RU</b-dropdown-item>
+                            <b-dropdown-item href="#">FA</b-dropdown-item>
+                        </b-nav-item-dropdown>
+                    </b-navbar-nav>
+                </b-collapse>
+            </b-navbar>
+        </div>
+        <br>
+        <br>
+        <br>
+        <b-row>
+            <b-col class="col-md-6 col-12">
+                <b-card header="โปรไฟล์ของคุณ" header-tag="header" class="bg-dark text-white">
+                    <b-list-group>
+                        <b-list-group-item class="d-flex justify-content-between align-items-center bg-danger text-white">
+                            ชื่อผู้ใช้
+                            <b-badge variant="dark" pill>{{ sender.username }}</b-badge>
+                        </b-list-group-item>
+
+                        <b-list-group-item class="d-flex justify-content-between align-items-center text-white" style="background:#555;">
+                            สร้างรายได้ทั้งหมด
+                            <b-badge variant="danger" pill>null</b-badge>
+                        </b-list-group-item>
+
+                        <b-list-group-item class="d-flex justify-content-between align-items-center text-white" style="background:#555;">
+                            ยูสเซอร์จีคลับ
+                            <b-badge variant="danger" pill>{{ sender.gclubUser }}</b-badge>
+                        </b-list-group-item>
+                    </b-list-group>
+                    <b-card-footer>
+                        <marquee>คุณสามารถแก้ไขข้อมูลส่วนตัวได้ที่ เมนู : แก้ไขข้อมูล</marquee>
+                    </b-card-footer>
+                </b-card>
+                <br>
+            </b-col>
+            <b-col>
+                <b-card header="สถิติของระบบ" header-tag="header" class="bg-dark text-white">
+                    <b-list-group>
+                        <b-list-group-item class="d-flex justify-content-between align-items-center bg-success text-white">
+                            บอทชนะ
+                            <b-badge variant="dark" pill>140,000</b-badge>
+                        </b-list-group-item>
+
+                        <b-list-group-item class="d-flex justify-content-between align-items-center text-white" style="background:#555;">
+                            บอทแพ้
+                            <b-badge variant="danger" pill>1,400</b-badge>
+                        </b-list-group-item>
+
+                        <b-list-group-item class="d-flex justify-content-between align-items-center text-white" style="background:#555;">
+                            อัตราการชนะ
+                            <b-badge variant="success" pill>99%</b-badge>
+                        </b-list-group-item>
+                    </b-list-group>
+                    <b-card-footer>
+                        <marquee>สถิตินี้คือผลจากผู้ใช้งานระบบจริง ไม่มีการปรับแต่งแต่อย่างใด</marquee>
+                    </b-card-footer>
+                </b-card>
+                <br>
+            </b-col>
+        </b-row>
+        <b-row>
+          <b-col>
+            <b-btn block @click="autoroom()" class="rounded-0 btn-lg" variant="warning">
+                เลือกห้องอัติโนมัติ
+            </b-btn>
+          </b-col>
+        </b-row>
+        <b-row>
+            <b-col class="p-3 col-md-6 col-12">
+
+                <b-progress :max="100" height="2rem" striped :animated="true" class="rounded-0">
+                    <b-progress-bar :value="100" show-value id="valueDeskA">
+                        <span id="statusDeskA"></span>
+                    </b-progress-bar>
+                </b-progress>
+                <b-btn block @click="goto('/Panel/A')" class="rounded-0 btn-sm" variant="secondary">
+                    เลือกห้องนี้
+                    <span class="badge badge-secondary" id="percentA">100%</span>
+                </b-btn>
+
+            </b-col>
+            <b-col class="p-3 col-md-6 col-12">
+
+                <b-progress :max="100" height="2rem" striped :animated="true" class="rounded-0">
+                    <b-progress-bar :value="100" show-value id="valueDeskB">
+                        <span id="statusDeskB"></span>
+                    </b-progress-bar>
+                </b-progress>
+                <b-btn block @click="goto('/Panel/B')" class="rounded-0 btn-sm" variant="secondary">
+                    เลือกห้องนี้
+                    <span class="badge badge-secondary" id="percentB">100%</span>
+                </b-btn>
+
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col class="p-3 col-md-6 col-12">
+
+                <b-progress :max="100" height="2rem" striped :animated="true" class="rounded-0">
+                    <b-progress-bar :value="100" show-value id="valueDeskC">
+                        <span id="statusDeskC"></span>
+                    </b-progress-bar>
+                </b-progress>
+                <b-btn block @click="goto('/Panel/C')" class="rounded-0 btn-sm" variant="secondary">
+                    เลือกห้องนี้
+                    <span class="badge badge-secondary" id="percentC">100%</span>
+                </b-btn>
+
+            </b-col>
+            <b-col class="p-3 col-md-6 col-12">
+
+                <b-progress :max="100" height="2rem" striped :animated="true" class="rounded-0">
+                    <b-progress-bar :value="100" show-value id="valueDeskD">
+                        <span id="statusDeskD"></span>
+                    </b-progress-bar>
+                </b-progress>
+                <b-btn block @click="goto('/Panel/D')" class="rounded-0 btn-sm" variant="secondary">
+                    เลือกห้องนี้
+                    <span class="badge badge-secondary" id="percentD">100%</span>
+                </b-btn>
+
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col class="p-3 col-md-6 col-12">
+
+                <b-progress :max="100" height="2rem" striped :animated="true" class="rounded-0">
+                    <b-progress-bar :value="100" show-value id="valueDeskE">
+                        <span id="statusDeskE"></span>
+                    </b-progress-bar>
+                </b-progress>
+                <b-btn block @click="goto('/Panel/E')" class="rounded-0 btn-sm" variant="secondary">
+                    เลือกห้องนี้
+                    <span class="badge badge-secondary" id="percentE">100%</span>
+                </b-btn>
+
+            </b-col>
+            <b-col class="p-3 col-md-6 col-12">
+
+                <b-progress :max="100" height="2rem" striped :animated="true" class="rounded-0">
+                    <b-progress-bar :value="100" show-value id="valueDeskF">
+                        <span id="statusDeskF"></span>
+                    </b-progress-bar>
+                </b-progress>
+                <b-btn block @click="goto('/Panel/F')" class="rounded-0 btn-sm" variant="secondary">
+                    เลือกห้องนี้
+                    <span class="badge badge-secondary" id="percentF">100%</span>
+                </b-btn>
+
+            </b-col>
+        </b-row>
+          <b-row>
+            <b-col>
+                <b-card class="bg-dark text-white">
+                    <b-card-header>
+                        สูตร :@Zeancasino
+                    </b-card-header>
+                    <b-row>
+                        <b-col class="col-12">
+                            <b-list-group>
+                                <b-list-group-item class="d-flex justify-content-between align-items-center text-white" style="background:#555;">
+                                    แทงทบ
+                                    <b-badge variant="danger" pill>{{ settings.double }}</b-badge>
+                                </b-list-group-item>
+
+                                <b-list-group-item class="d-flex justify-content-between align-items-center text-white" style="background:#555;">
+                                    เรทเดินเงิน
+                                    <b-badge variant="danger" pill>{{ settings.rate }}</b-badge>
+                                </b-list-group-item>
+
+                                <b-list-group-item class="d-flex justify-content-between align-items-center text-white" style="background:#555;">
+                                    เล่นสูงสุด
+                                    <b-badge variant="danger" pill>{{ settings.gamePlay }}</b-badge>
+                                </b-list-group-item>
+                            </b-list-group>
+                        </b-col>
+                        <b-col>
+                            <b-list-group>
+                                <b-list-group-item class="d-flex justify-content-between align-items-center text-white" style="background:#555;">
+                                    นับตาเสมอ
+                                    <b-badge variant="dark" pill>{{ settings.tieFocus }}</b-badge>
+                                </b-list-group-item>
+
+                                <b-list-group-item class="d-flex justify-content-between align-items-center text-white" style="background:#555;">
+                                    เล่นแบบกลับตัว
+                                    <b-badge variant="dark" pill>{{ settings.dynamic }}</b-badge>
+                                </b-list-group-item>
+
+                                <b-list-group-item class="d-flex justify-content-between align-items-center text-white" style="background:#555;">
+                                    ทบเงินทั้งหมด
+                                    <b-badge variant="dark" pill>{{ settings.overBet }}</b-badge>
+                                </b-list-group-item>
+                            </b-list-group>
+                        </b-col>
+                    </b-row>
+                </b-card>
+            </b-col>
+        </b-row>
+        <b-row class="fixed-bottom">
+            <b-button @click="logout" variant="danger" squared class="w-100">ออกจากระบบ</b-button>
+        </b-row>
+    <br><br>
+    </b-container>
+</template>
+<script>
+/* eslint-disable */
+const md5 = require('md5')
+export default {
+  data () {
+    return {
+      render: true,
+      settings: {
+        double: '',
+        rate: '',
+        gamePlay: '',
+        tieFocus: '',
+        dynamic: '',
+        overBet: ''
+      },
+      sender: {
+        username: '',
+        gclubUser: '',
+        gclubPass: '',
+        status: true,
+        multionline: 'L9,9999',
+        multiurl: 'wss://multimobileroad.bacc6666.com/',
+        url: false
+      }
+    }
+  },
+  beforeCreate: function () {
+    if (!this.$session.exists() || this.$session.get('userid') === undefined) {
+      this.$router.push('/')
+    } else {
+      var promiseC = new Promise((resolve, reject) => {
+        this.axios
+          .post('http://192.168.1.108:3000/getUserInfo', {
+            userid: this.$session.get('userid')
+          })
+          .then(function (response) {
+;           var username = response.data[0].username
+            var guser = response.data[0].gclub_user
+            var gpass = response.data[0].gclub_pass
+            var setting = response.data[0].setting
+            var gclubuser = guser.charAt(0).toUpperCase() + guser.slice(1)
+            var data = {
+                status: true,
+                guser: gclubuser,
+                gpass: gpass,
+                username: username,
+                setting: setting
+              }
+            resolve(data)
+            
+          })
+      })
+      promiseC
+        .then((value) => {
+          this.sender.gclubUser = value.guser;
+          this.sender.username = value.username;
+          if(value.setting === null){
+            this.render = false
+            this.$router.push('/Setting');
+            return false;
+          }else{
+            var settings = JSON.parse(value.setting);
+            this.settings.double = settings.double;
+            this.settings.rate = settings.rate;
+            this.settings.gamePlay = settings.maxPlay;
+            if(settings.tieFocus === false){
+              this.settings.tieFocus = 'ปิดใช้งาน';
+            }else{
+              this.settings.tieFocus = 'เปิดใช้งาน';
+            }
+            if(settings.dynamic === false){
+              this.settings.dynamic = 'ปิดใช้งาน';
+            }else{
+              this.settings.dynamic = 'เปิดใช้งาน';
+            }
+            if(settings.overbet === false){
+              this.settings.overBet = 'ปิดใช้งาน';
+            }else{
+              this.settings.overBet = 'เปิดใช้งาน';
+            }
+            this.$session.set('setting', value.setting)
+            return true;
+          }
+        })
+        .then(value => {
+          if(value === true){
+            var gpass = md5(this.sender.gclubPass).toUpperCase()
+            this.$session.set('hashpass', gpass)
+            var promiseZ = new Promise((resolve, reject) => {
+            this.axios.get('https://ipinfo.io/ip').then(function (response) {
+              var backmultiurl = gpass + ',Web,' + response.data
+              resolve({ data: backmultiurl, ip: response.data })
+            })
+          })
+          promiseZ
+            .then(value => {
+              var fullmultiUrl =
+                'L0,' + this.sender.gclubUser + ',' + value.data
+              this.$session.set('gclubuser', this.sender.gclubUser)
+              this.$session.set('clientip', value.ip)
+              var setting = {
+                double: 6,
+                rate: 2,
+                gamePlay: 30,
+                tieFocus: false,
+                dynamic: true,
+                overBet: true
+              }
+              this.$session.set('setting', setting)
+              return fullmultiUrl
+            })
+            .then(value => {
+              this.$session.set('multiprofile', value)
+              this.multiconnect(value)
+            })
+          }
+        })
+    }
+  },
+  created () {},
+  methods: {
+    autoroom() {
+      this.multisockethome.send('!close')
+      this.multisockethome.close()
+      this.render = false
+      setTimeout(() => {
+        this.$router.push('/Auto');
+      }, 1500)
+    },
+    logout () {
+      this.multisockethome.send('!close')
+      this.multisockethome.close()
+      this.$session.destroy()
+      this.notify('ออกจากระบบ', 'primary')
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 1500)
+    },
+    notify (data, classpoint) {
+      this.$bvToast.toast(data, {
+        title: `แจ้งเตือน`,
+        variant: classpoint,
+        solid: true,
+        autoHideDelay: 2500
+      })
+    },
+    setting(){
+      this.multisockethome.send('!close')
+      this.multisockethome.close();
+      this.render = false
+      this.$router.push('/Setting');
+    },
+    goto (desk) {
+      this.multisockethome.send('!close')
+      this.multisockethome.close()
+      this.render = false
+      setTimeout(() => {
+        this.$router.push(desk)
+      }, 1500)
+    },
+    multiconnect (profile) {
+      this.multisockethome = new WebSocket(this.sender.multiurl)
+      this.multisockethome.onopen = () => {
+      this.multisockethome.send(profile)
+        setInterval(() => {
+          if (this.render === true) {
+            this.multisockethome.send(this.sender.multionline)
+          }
+        }, 5000)
+      }
+      this.multisockethome.onmessage = ({ data }) => {
+        var array = data.split('|')
+        if (array[0] === '$New' && array[1] === 'Bacc') {
+          var selector = document.getElementById('valueDesk' + array[2])
+          if (array[3].split(':')[1] === '1') {
+            selector.innerText = array[4].split(':')[1] + ' วินาที'
+          } else if (array[3].split(':')[1] === '2') {
+            selector.innerText = 'กำลังเปิดไพ่'
+          } else if (array[3].split(':')[1] === '3') {
+            selector.innerText = 'คำนวณผล'
+          } else if (array[3].split(':')[1] === '4') {
+            selector.innerText = 'กำลังพักครึ่ง'
+          }
+        } else if (array[0] === '$All' && array[1] === 'Bacc') {
+          var selector = document.getElementById('valueDesk' + array[2])
+          var selectors = document.getElementById('percent' + array[2])
+          var t = array[3].split('*')[4].split(':')[1]
+          var calcu = parseFloat(100 - t * 5)
+          selector.style.width = calcu + '%'
+          selectors.innerText = calcu + '%'
+          var all = array[3].split('*');
+          var count = parseFloat(all[0].split(':')[1])+parseFloat(all[1].split(':')[1])+parseFloat(all[4].split(':')[1]);
+
+          
+          if (calcu > 79 && calcu < 100) {
+            selector.className =
+              'progress-bar progress-bar-striped progress-bar-animated bg-success'
+            selector.style.width = calcu + '%'
+          } else if (calcu > 69 && calcu < 79) {
+            selector.className =
+              'progress-bar progress-bar-striped progress-bar-animated bg-warning'
+            selector.style.width = calcu + '%'
+          } else if (calcu > 50 && calcu < 69) {
+            selector.className =
+              'progress-bar progress-bar-striped progress-bar-animated bg-danger'
+            selector.style.width = calcu + '%'
+          } else if (calcu < 50) {
+            selector.className =
+              'progress-bar progress-bar-striped progress-bar-animated bg-dark'
+            selector.style.width = calcu + '%'
+          }
+        }
+      }
+    }
+  }
+}
+</script>
+<style scope>
+.card-body{
+  padding: 0px;
+}
+  body{
+    background: #222;
+  }
+</style>

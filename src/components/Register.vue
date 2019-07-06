@@ -1,0 +1,156 @@
+<template>
+    <b-container>
+        <br>
+        <br>
+        <form v-on:submit.prevent="register">
+        <b-card title="สมัครสมาชิก" class="bg-dark text-white p-3">
+            <b-card-text>
+                <label>ชื่อผู้ใช้</label>
+                <b-form-input v-model="username" type="text" required autocomplete="off"></b-form-input>
+                <label>รหัสผ่าน</label>
+                <b-form-input v-model="password" type="password" required autocomplete="off"></b-form-input>
+                <label>ยืนยันรหัสผ่าน</label>
+                <b-form-input v-model="cpassword" type="password" required autocomplete="off"></b-form-input>
+                <label for="auth-user">ยูสเซอร์จีคลับ</label>
+                <b-input v-model="userId" :state="validation" id="auth-user"></b-input>
+                <b-form-invalid-feedback :state="validation">
+                    กรุณาใช้ยูสเซอร์ที่สมัครด้วยระบบใหม่ของจีคลับเท่านั้น
+                </b-form-invalid-feedback>
+                <b-form-valid-feedback :state="validation">
+                    รหัสใช้งานสามารถใช้งานได้
+                </b-form-valid-feedback>
+                <label>รหัสผ่านจีคลับ</label>
+                <b-form-input v-model="gclub_pass" type="password" required autocomplete="off"></b-form-input>
+                <div class="text-light" style="font-size:12px;">
+                    หากรหัสผ่านที่ไม่ตรงกับจีคลับระบบจะไม่สามารถใช้งานได้
+                </div>
+            </b-card-text>
+            <b-button type="submit" block variant="success">สมัครสมาชิก</b-button>
+            <br>
+            <center><a @click="goto('/')" class="btn btn-primary btn-block">เข้าสู่ระบบ</a></center>
+        </b-card>
+        </form>
+    </b-container>
+</template>
+
+<script>
+/* eslint-disable */
+const { base64encode, base64decode } = require('nodejs-base64');
+import api from '../backend'
+export default {
+    data() {
+
+        return {
+            userId: '',
+            username: '',
+            password: '',
+            cpassword: '',
+            gclub_pass: '',
+            snackbar: false,
+            alerttext: '',
+            submit: false,
+            alluser: false
+        }
+    },
+    beforeCreate: function(){
+    var promise1 = new Promise((resolve, reject) => {
+        this.axios.get(api.ROOT_URL+'/getUserList', {
+            
+        }).then(function(response) {
+            var data = response.data.replace(/99H9/g, 'H');
+            var decode = base64decode(data);
+            resolve(decode);
+        })
+    });
+    promise1.then((decode) => {
+        var data = JSON.parse(decode);
+        var array = [];
+        data.forEach((val,i) => {
+            array.push(val.user);
+        })
+        this.alluser = array;
+    })
+    },
+    computed: {
+      validation() {
+        if(this.userId.length === 7){
+            var data = this.userId.toString();
+            var datas = data.substring(0, 4);
+            var datax = datas.toUpperCase();
+            var user = this.alluser;
+            var find = user.indexOf(datax);
+            if(find != -1){
+                this.submit = true;
+                return true;
+            }else{
+                this.submit = false;
+                return false;
+            }
+        }else{
+            this.submit = false;
+            return false;
+        }
+      }
+    },
+    methods:{
+        goto(str) {
+            this.$router.push(str);
+        },
+        notify(data, classpoint) {
+            this.$bvToast.toast(data, {
+                title: `แจ้งเตือน`,
+                variant: classpoint,
+                solid: true,
+                autoHideDelay: 2500,
+            })
+        },
+        register(){
+            if(this.username && this.password && this.cpassword && this.userId && this.gclub_pass){
+                if(this.submit === true){
+                    if(this.cpassword === this.password){
+                        var promise1 = new Promise((resolve, reject) => {
+                            this.axios.post(api.ROOT_URL+'/saveuser', {
+                                username: this.username,
+                                password: this.password,
+                                gclub_user: this.userId,
+                                gclub_pass: this.gclub_pass
+                            }).then(function (response) {
+                                resolve(response.data)
+                            })
+                        });
+                        promise1.then((value) => {
+                            if(value.status === true){
+                                this.notify(value.msg,'success')
+                                setTimeout(() => {
+                                    window.location.href = '/';
+                                }, 1500);
+                            }else{
+                                this.userId = '';
+                                this.username = '';
+                                this.cpassword = '';
+                                this.password = '';
+                                this.gclub_pass = '';
+                                this.notify(value.msg,'danger')
+                            }
+                        })
+                    }else{
+                        this.notify('ยืนยันรหัสผ่านผิดพลาดกรุณาลองใหม่อีกครั้ง','danger')
+                        this.cpassword = '';
+                        this.password = '';
+                    }
+                }else{
+                    this.notify('กรุณาตรวจสอบข้อมูลอีกครั้ง','danger')
+                }
+            }else{
+                this.notify('กรุณากรอกข้อมูลให้ครบทุกช่อง','warning')
+            }
+        }
+    }
+}
+</script>
+
+<style scope>
+    body{
+        background: #222;
+    }
+</style>
