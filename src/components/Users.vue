@@ -15,7 +15,7 @@
                     </b-form-group>
                 </b-col>
                 <br>
-                <b-card title="ยูสเซอร์" class="bg-dark text-black p-3">
+                <b-card title="ยูสเซอร์" class="bg-dark text-white p-3">
                     <p class="mt-3">ทั้งหมด {{this.alluser.length}} รายการ</p>
                       <b-table id="my-table" responsive  striped hover
                        :items="alluser"
