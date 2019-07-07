@@ -15,7 +15,7 @@
                     </b-form-group>
                 </b-col>
                 <br>
-                <b-card title="ยูสเซอร์" class="bg-dark text-white p-3">
+                <b-card title="ยูสเซอร์" class="bg-dark text-black p-3">
                     <p class="mt-3">ทั้งหมด {{this.alluser.length}} รายการ</p>
                       <b-table id="my-table" responsive  striped hover
                        :items="alluser"
@@ -28,7 +28,65 @@
                        small
                         :sort-by.sync="sortBy"
                         :sort-desc.sync="sortDesc"
-                       ></b-table>
+                       >
+                    <template slot="show_details" slot-scope="row">
+                        <b-button size="sm" @click="showedit(row.item)" class="mr-2">
+                        {{ row.detailsShowing ? 'ปิด' : 'แก้ไข'}} 
+                        </b-button>
+                    </template>
+                    <template slot="row-details" slot-scope="row">
+                    <b-container>
+                        <form v-on:submit.prevent="register(row.item)">
+                        <b-card class="bg-dark text-white p-3">
+                            <b-card-text>
+                            <b-form-group
+                            id="fieldset-0"
+                            label="ชื่อผู้ใช้"
+                            label-for="input-0"
+                            :invalid-feedback="uinvalidFeedback"
+                            :valid-feedback="uvalidFeedback"
+                            :state="userstate"
+                            >
+                            <b-form-input v-model="username" type="text" :state="userstate" required autocomplete="off" trim aria-invalid="true"></b-form-input>
+                            </b-form-group>
+                            <br>
+                            <b-form-group
+                            id="fieldset-1"
+                            label="รหัสผ่าน"
+                            label-for="input-1"
+                            :invalid-feedback="invalidFeedback"
+                            :valid-feedback="validFeedback"
+                            :state="passtate"
+                            >
+                            <b-form-input v-model="password" :state="passtate" trim type="text" required autocomplete="off" aria-invalid="true" aria-describedby="input-pass-help input-pass-feedback"></b-form-input>
+                            </b-form-group>
+                        <label>ยืนยันรหัสผ่าน</label>
+                        <b-form-input v-model="cpassword" type="text"  required autocomplete="off"></b-form-input>
+                        <br>
+                        <label for="auth-user">ยูสเซอร์จีคลับ</label>
+                        <b-input v-model="userId" :state="validation" id="auth-user" aria-invalid="true" aria-describedby="input-gclub-help input-gclub-feedback"></b-input>
+                        <b-form-invalid-feedback id="input-gclub-feedback">
+                            กรุณาใช้ยูสเซอร์ที่สมัครด้วยระบบใหม่ของจีคลับเท่านั้น
+                        </b-form-invalid-feedback>
+                        <b-form-valid-feedback id="input-gclub-help">
+                            รหัสใช้งานสามารถใช้งานได้
+                        </b-form-valid-feedback>
+                        <label>รหัสผ่านจีคลับ</label>
+                        <b-form-input v-model="gclub_pass" type="text" required autocomplete="off"></b-form-input>
+                        <div class="text-light" style="font-size:12px;">
+                            หากรหัสผ่านที่ไม่ตรงกับจีคลับระบบจะไม่สามารถใช้งานได้
+                        </div>
+                            </b-card-text>
+                            
+                            <b-button  type="submit" variant="success" class="rounded-0"><i class="fas fa-sign-in-alt"></i> บันทึก</b-button>
+                            <span class="p-1"></span>
+                            <b-button  @click="row.toggleDetails" variant="primary" class="rounded-0"><i class="fas fa-sign-in-alt"></i> ยกเลิก</b-button>
+                            <!-- <center><a @click="goto('/')" class="btn btn-primary btn-block">เข้าสู่ระบบ</a></center> -->
+                        </b-card>
+                        </form>
+                    </b-container>
+                    </template>
+                       </b-table>
                         <b-pagination
                         v-model="currentPage"
                         :total-rows="rows"
@@ -66,6 +124,7 @@ export default {
     data() {
 
         return {
+            Id:'',
             userId: '',
             username: '',
             password: '',
@@ -81,13 +140,15 @@ export default {
             { key: 'password', sortable: false },
             { key: 'gclub_user', sortable: true },
             { key: 'reg_date', sortable: true },
-            { key: 'active_date', sortable: true }
+            { key: 'active_date', sortable: true },
+            { key: 'show_details' }
             ],
             perPage: 10,
             currentPage: 1,
             filter: null,
             sortBy: 'reg_date',
             sortDesc: false,
+            showDetails:false
         }
     },
     beforeCreate: function()
@@ -119,25 +180,83 @@ export default {
        rounder(){
             return Math.ceil(this.alluser.length/this.perPage);
         },
-    //   validation() {
-    //     if(this.userId.length === 7){
-    //         var data = this.userId.toString();
-    //         var datas = data.substring(0, 4);
-    //         var datax = datas.toUpperCase();
-    //         var user = this.alluser;
-    //         var find = user.indexOf(datax);
-    //         if(find != -1){
-    //             this.submit = true;
-    //             return true;
-    //         }else{
-    //             this.submit = false;
-    //             return false;
-    //         }
-    //     }else{
-    //         this.submit = false;
-    //         return false;
-    //     }
-    //   }
+        validation() {
+        if(this.userId.length === 7){
+            
+            var data = this.userId.toString();
+            var datas = data.substring(0, 4);
+            var datax = datas.toUpperCase();
+            var user = this.alluser;
+            var find = user.indexOf(datax);
+            if(find != -1){
+                this.submit = true;
+                return true;
+            }else{
+                this.submit = false;
+                return false;
+            }
+        }else {
+            this.submit = false;
+            return false;
+        }
+      },passtate() {
+          if(this.password.length>5) {
+                const re=new RegExp("([A-Za-z0-9]{6,20})");
+                if(!re.test(this.password))
+                {
+                    this.submit = false;
+                    return false;
+                } else {
+                    this.submit = true;
+                    return true;
+                }
+
+        } else {
+                    this.submit = false;
+                    return false;
+                }
+      },
+       invalidFeedback() {
+        if (this.password.length > 5) {
+          return ''
+        } else if (this.password.length > 0) {
+          return 'รหัสผ่านต้องมีตัวเลข หรือ ตัวหนังสือภาษอังกฤษ ไม่น้อยกว่า 6 ตัวอักษร ห้ามมีเครื่องหมาย'
+        } else {
+          return ''
+        }
+      },
+      validFeedback() {
+        return this.passtate === true ? 'รหัสผ่านสามารถใช้งานได้' : ''
+      },
+      userstate() {
+          if(this.username.length>5) {
+                const re=new RegExp("([A-Za-z0-9]{6,20})");
+                if(!re.test(this.username))
+                {
+                    this.submit = false;
+                    return false;
+                } else {
+                    this.submit = true;
+                    return true;
+                }
+
+        } else {
+                    this.submit = false;
+                    return false;
+                }
+      },
+       uinvalidFeedback() {
+        if (this.username.length > 5) {
+          return ''
+        } else if (this.username.length > 0) {
+          return 'ขื่อผู้ใช้ต้องมีตัวเลข หรือ ตัวหนังสือภาษอังกฤษ ไม่น้อยกว่า 6 ตัวอักษร ห้ามมีเครื่องหมาย'
+        } else {
+          return ''
+        }
+      },
+      uvalidFeedback() {
+        return this.userstate === true ? 'ชื่อผู้ใช้สามารถใช้งานได้' : ''
+      }
     },
     methods:{
         // goto(str) {
@@ -159,12 +278,13 @@ export default {
                 })
             });
             promise1.then((decode) => {
-                var data = JSON.parse(decode);
-                var array = [];
-                data.forEach((val,i) => {
-                    array.push({'row':i+1,'name':val.user});
-                })
-                this.alluser = array;
+                
+                // var data = JSON.parse(decode);
+                // var array = [];
+                // data.forEach((val,i) => {
+                //     array.push({'row':i+1,'name':val.user});
+                // })
+                this.alluser = decode;
             })
         },
         notify(data, classpoint) {
@@ -175,43 +295,66 @@ export default {
                 autoHideDelay: 2500,
             })
         },
-        register(){
-            if(this.username){
-                console.log(this.username,this.submit,api.ROOT_URL+'/add');
-               
-                   
+        register(item){
+            if(this.username && this.password && this.cpassword && this.userId && this.gclub_pass){
+                  if(this.submit === true || (this.userstate===true && this.passtate===true)){
+                    if(this.cpassword === this.password){
                         var promise1 = new Promise((resolve, reject) => {
-                            this.axios.post(api.ROOT_URL+'/add', {
+                            this.axios.post(api.ROOT_URL+'/update', {
+                                id:this.Id,
                                 username: this.username,
-                                // password: this.password,
-                                // gclub_user: this.userId,
-                                // gclub_pass: this.gclub_pass
+                                password: this.password,
+                                gclub_user: this.userId,
+                                gclub_pass: this.gclub_pass
                             }).then(function (response) {
                                 resolve(response.data)
                             })
                         });
                         promise1.then((value) => {
-                            console.log(value)
+                           // console.log(value)
                             if(value.status === true){
                                 this.notify('บันทึกสำเร็จ','success')
                                  setTimeout(() => {
-                                      this.username = '';
-                                      this.reload();
+                                     this.$root.$set(item, '_showDetails', !item._showDetails);
+                                     this.Id='';
+                                     this.userId = '';
+                                     this.username = '';
+                                     this.cpassword = '';
+                                     this.password = '';
+                                     this.gclub_pass = '';
+                                     this.reload();
                                  }, 1500);
                             }else{
-                               // this.userId = '';
-                                this.username = '';
+                                // this.Id='';
+                                // this.userId = '';
+                                // this.username = '';
                                 // this.cpassword = '';
                                 // this.password = '';
                                 // this.gclub_pass = '';
-                                // this.notify(value.msg,'danger')
+                                this.notify(value.msg,'danger')
                             }
                         })
                   
-               
+                    }else{
+                        this.notify('ยืนยันรหัสผ่านผิดพลาดกรุณาลองใหม่อีกครั้ง','danger')
+                        this.cpassword = '';
+                        //this.password = '';
+                    }
+                }else{
+                    this.notify('กรุณาตรวจสอบข้อมูลอีกครั้ง','danger')
+                }
             }else{
                 this.notify('กรุณากรอกข้อมูลให้ครบทุกช่อง','warning')
             }
+        },
+        showedit(item)
+        {
+          this.Id=item.id;
+          this.username=item.username;
+          this.password=item.password;
+          this.userId=item.gclub_user;
+          this.gclub_pass=item.gclub_pass;
+          this.$root.$set(item, '_showDetails', !item._showDetails);
         }
     }
 }
