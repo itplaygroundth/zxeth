@@ -8,7 +8,7 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    { path: '/',
+    { path: '/Login',
       name: 'Login',
       component: () => import(/* webpackChunkName: "about" */ './components/Login.vue')
     },
@@ -18,7 +18,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './components/Add.vue')
     },
     {
-      path: '/Users',
+      path: '/',
       name: 'Users',
       component: () => import(/* webpackChunkName: "about" */ './components/Users.vue')
     },
