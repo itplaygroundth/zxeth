@@ -4,11 +4,27 @@
         <br>
         <b-row>
             <b-col>
+                <b-row>
+                <b-col class="my-1">
+                    <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+                    <b-input-group>
+                        <b-form-input v-model="filter" placeholder="Type to Search"></b-form-input>
+                        <b-input-group-append>
+                        <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+                    </b-form-group>
+                </b-col>
+                </b-row>
+                <b-row>
+                     <b-col class="my-1">
                 <b-card title="ยูสเซอร์" class="bg-dark text-white p-3">
                     <p class="mt-3">ทั้งหมด {{this.alluser.length}} รายการ</p>
                       <b-table id="my-table" responsive  striped hover
                        :items="alluser"
+                        :filter="filter"
                        :fields="fields"
+                        @filtered="onFiltered"
                        dark
                        :per-page="perPage"
                        :current-page="currentPage"
@@ -25,6 +41,8 @@
                 <!-- <div v-for="(m, index) in alluser"  :key="index" ref="blocks" class="item" replace="true">{{m}}
                 </div> -->
                 </b-card>
+                     </b-col>
+                </b-row>
             </b-col>
             <b-col>
         <form v-on:submit.prevent="register">
@@ -62,6 +80,7 @@ export default {
             fields: ['row', 'name'],
             perPage: 10,
             currentPage: 1,
+             filter: null,
         }
     },
     beforeCreate: function()
@@ -115,6 +134,11 @@ export default {
         // goto(str) {
         //     this.$router.push(str);
         // },
+          onFiltered(filteredItems) {
+        // Trigger pagination to update the number of buttons/pages due to filtering
+        this.totalRows = filteredItems.length
+        this.currentPage = 1
+        },
         reload() {
             var promise1 = new Promise((resolve, reject) => {
                 this.axios.get(api.ROOT_URL+'/getUserList', {

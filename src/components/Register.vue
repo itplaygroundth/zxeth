@@ -79,7 +79,7 @@ export default {
             var datax = datas.toUpperCase();
             var user = this.alluser;
             var find = user.indexOf(datax);
-            if(find != -1){
+           if(find != -1){
                 this.submit = true;
                 return true;
             }else{
