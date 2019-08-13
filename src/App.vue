@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <head-app :currenPath="currentPath"/>
+    <head-app :currentPath="currentPath"/>
     <router-view/>
     <footer>
       <div style="text-align:center;color:#AAA;">
@@ -26,9 +26,6 @@ export default {
         return {
             currentPath:'/Users'
         }
-    },
-    mounted () {
-    currentPath = this.$route.path
     }
 }
 </script>

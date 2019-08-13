@@ -7,9 +7,9 @@
 
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
-        <b-nav-item @click="goto('/Register')"  :class="[linkActiveClass && 'active-class', linkExactActiveClass && 'exact-active-class']">Register</b-nav-item>
-        <b-nav-item @click="goto('/Users')"  :class="[linkActiveClass && 'active-class', linkExactActiveClass && 'exact-active-class']">Users</b-nav-item>
-        <b-nav-item @click="goto('/Add')"  :class="[linkActiveClass && 'active-class', linkExactActiveClass && 'exact-active-class']">GClub</b-nav-item>
+        <b-nav-item @click="goto('/Register')">Register</b-nav-item>
+        <b-nav-item @click="goto('/Users')"  >Users</b-nav-item>
+        <b-nav-item @click="goto('/Add')" >GClub</b-nav-item>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
@@ -18,6 +18,7 @@
 
 <script>
 export default {
+  props: { currenPath: String },
   data () {
     return {
       currentPath: '',

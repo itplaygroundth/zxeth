@@ -396,31 +396,31 @@ export default {
         delete(item)
         {
             // console.log(item);
-            // var promise1 = new Promise((resolve, reject) => {
-            //                 this.axios.post(api.ROOT_URL+'/delete', {
-            //                     id:this.userId,
-            //                 }).then(function (response) {
-            //                     resolve(response.data)
-            //                 })
-            //             });
-            //             promise1.then((value) => {
-            //                // console.log(value)
-            //                 if(value.status === true){
-            //                     this.notify('บันทึกสำเร็จ','success')
-            //                      setTimeout(() => {
-            //                          this.$root.$set(item, '_showDetails', !item._showDetails);
-            //                          this.Id='';
-            //                          this.userId = '';
-            //                          this.username = '';
-            //                          this.cpassword = '';
-            //                          this.password = '';
-            //                          this.gclub_pass = '';
-            //                          this.reload();
-            //                      }, 1500);
-            //                 }else{
-            //                     this.notify(value.msg,'danger')
-            //                 }
-            //             })
+            var promise1 = new Promise((resolve, reject) => {
+                            this.axios.post(api.ROOT_URL+'/delete', {
+                                id:this.userId,
+                            }).then(function (response) {
+                                resolve(response.data)
+                            })
+                        });
+                        promise1.then((value) => {
+                           // console.log(value)
+                            if(value.status === true){
+                                this.notify('บันทึกสำเร็จ','success')
+                                 setTimeout(() => {
+                                     this.$root.$set(item, '_showDetails', !item._showDetails);
+                                     this.Id='';
+                                     this.userId = '';
+                                     this.username = '';
+                                     this.cpassword = '';
+                                     this.password = '';
+                                     this.gclub_pass = '';
+                                     this.reload();
+                                 }, 1500);
+                            }else{
+                                this.notify(value.msg,'danger')
+                            }
+                        })
         }
 
     }
