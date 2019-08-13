@@ -397,7 +397,7 @@ export default {
         {
             // console.log(item);
             var promise1 = new Promise((resolve, reject) => {
-                            this.axios.post(api.ROOT_URL+'/delete', {
+                            this.axios.post(api.ROOT_URL+'/deluser', {
                                 id:this.userId,
                             }).then(function (response) {
                                 resolve(response.data)
