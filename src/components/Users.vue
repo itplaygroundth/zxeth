@@ -31,7 +31,7 @@
                        >
                     <template slot="show_details" slot-scope="row">
                         <b-button size="sm" @click="showedit(row.item)" class="mr-2">
-                        {{ row.detailsShowing ? 'ปิด' : 'แก้ไข'}} 
+                        {{ row.detailsShowing ? 'ปิด' : 'แก้ไข'}}
                         </b-button>
                     </template>
                     <template slot="row-details" slot-scope="row">
@@ -77,11 +77,21 @@
                             หากรหัสผ่านที่ไม่ตรงกับจีคลับระบบจะไม่สามารถใช้งานได้
                         </div>
                             </b-card-text>
-                            
-                            <b-button  type="submit" variant="success" class="rounded-0"><i class="fas fa-sign-in-alt"></i> บันทึก</b-button>
-                            <span class="p-1"></span>
-                            <b-button  @click="row.toggleDetails" variant="primary" class="rounded-0"><i class="fas fa-sign-in-alt"></i> ยกเลิก</b-button>
-                            <!-- <center><a @click="goto('/')" class="btn btn-primary btn-block">เข้าสู่ระบบ</a></center> -->
+                            <b-container>
+                            <b-row>
+                            <b-col>
+                            <b-button  type="submit" variant="success" class="btn-block pull-left"><i class="fas fa-sign-in-alt"></i> บันทึก</b-button>
+                            </b-col>
+                            <b-col>
+                            <b-button  @click="row.toggleDetails" variant="primary" class="btn-block pull-right"><i class="fas fa-sign-in-alt"></i> ยกเลิก</b-button>
+                            </b-col>
+                            </b-row>
+                            <b-row class="pt-3">
+                                <b-col>
+                            <center><a @click="showMsgBoxTwo(row.item)" class="btn btn-danger btn-block">ลบข้อมูล</a></center>
+                                </b-col>
+                            </b-row>
+                            </b-container>
                         </b-card>
                         </form>
                     </b-container>
@@ -181,7 +191,7 @@ export default {
             return Math.ceil(this.alluser.length/this.perPage);
         },
         validation() {
-        if(this.userId.length === 7){
+        if(8-this.userId.length<2){
             
             var data = this.userId.toString();
             var datas = data.substring(0, 4);
@@ -355,7 +365,64 @@ export default {
           this.userId=item.gclub_user;
           this.gclub_pass=item.gclub_pass;
           this.$root.$set(item, '_showDetails', !item._showDetails);
+        },
+         showMsgBoxTwo(item) {
+        this.boxTwo = ''
+        this.$bvModal.msgBoxConfirm('ต้องการลบข้อมูล ใช่หรือไม่?', {
+          title: 'แจ้งยืนยัน',
+          size: 'sm',
+          buttonSize: 'sm',
+          okVariant: 'success',
+          okTitle: 'ใช่',
+          cancelVariant: 'danger',
+          cancelTitle: 'ไม่',
+          footerClass: 'p-2',
+          hideHeaderClose: false,
+          centered: true
+        })
+          .then(value => {
+            if(value){
+            this.boxTwo = value
+            this.delete(item)
+            }else {
+                //this.$root.$set(item, '_showDetails', !item._showDetails);
+            }
+            
+          })
+          .catch(err => {
+            // An error occurred
+          })
+      },
+        delete(item)
+        {
+            // console.log(item);
+            // var promise1 = new Promise((resolve, reject) => {
+            //                 this.axios.post(api.ROOT_URL+'/delete', {
+            //                     id:this.userId,
+            //                 }).then(function (response) {
+            //                     resolve(response.data)
+            //                 })
+            //             });
+            //             promise1.then((value) => {
+            //                // console.log(value)
+            //                 if(value.status === true){
+            //                     this.notify('บันทึกสำเร็จ','success')
+            //                      setTimeout(() => {
+            //                          this.$root.$set(item, '_showDetails', !item._showDetails);
+            //                          this.Id='';
+            //                          this.userId = '';
+            //                          this.username = '';
+            //                          this.cpassword = '';
+            //                          this.password = '';
+            //                          this.gclub_pass = '';
+            //                          this.reload();
+            //                      }, 1500);
+            //                 }else{
+            //                     this.notify(value.msg,'danger')
+            //                 }
+            //             })
         }
+
     }
 }
 </script>

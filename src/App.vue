@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <head-app :currenPath="currentPath"/>
     <router-view/>
     <footer>
       <div style="text-align:center;color:#AAA;">
@@ -16,6 +17,20 @@
 /* eslint-disable */
 const moment = require('moment-timezone');
 moment().tz("Asia/Bangkok").format();
+import Head from './components/Head'
+export default {
+    components: {
+        'head-app':Head
+    },
+    data () {
+        return {
+            currentPath:'/Users'
+        }
+    },
+    mounted () {
+    currentPath = this.$route.path
+    }
+}
 </script>
 <style>
 @import url('https://fonts.googleapis.com/css?family=Kanit&display=swap');

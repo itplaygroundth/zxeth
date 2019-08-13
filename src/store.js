@@ -13,7 +13,8 @@ const state = {
   tab: null,
   auth: {
     loggedIn: false
-  }
+  },
+  cuurentPath: Object
 }
 const mutations = make.mutations(state)
 

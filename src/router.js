@@ -7,7 +7,14 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
+  linkActiveClass: 'active', // active class for non-exact links.
+  linkExactActiveClass: 'active', // active class for *exact* links.
   routes: [
+    {
+      path: '/',
+      // name: 'Users'
+      component: () => import(/* webpackChunkName: "about" */ './components/Users.vue')
+    },
     { path: '/Login',
       name: 'Login',
       component: () => import(/* webpackChunkName: "about" */ './components/Login.vue')
@@ -15,12 +22,10 @@ export default new Router({
     {
       path: '/Add',
       name: 'Add',
-      component: () => import(/* webpackChunkName: "about" */ './components/Add.vue')
-    },
-    {
-      path: '/',
-      name: 'Users',
-      component: () => import(/* webpackChunkName: "about" */ './components/Users.vue')
+      component: () => import(/* webpackChunkName: "about" */ './components/Add.vue'),
+      meta: {
+        active: false
+      }
     },
     {
       path: '/Stat',
@@ -30,7 +35,10 @@ export default new Router({
     {
       path: '/Register',
       name: 'Register',
-      component: () => import(/* webpackChunkName: "about" */ './components/Register.vue')
+      component: () => import(/* webpackChunkName: "about" */ './components/Register.vue'),
+      meta: {
+        active: false
+      }
     },
     {
       path: '/Panel/:Panel',
@@ -38,9 +46,12 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './components/Panel.vue')
     },
     {
-      path: '/Home',
-      name: 'Home',
-      component: () => import(/* webpackChunkName: "about" */ './components/Home.vue')
+      path: '/Users',
+      name: 'Users',
+      component: () => import(/* webpackChunkName: "about" */ './components/Users.vue'),
+      meta: {
+        active: false
+      }
     },
     {
       path: '/Auto',

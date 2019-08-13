@@ -1,35 +1,46 @@
 <template>
     <b-container>
-        <br>
-        <br>
-        <form v-on:submit.prevent="register">
-        <b-card title="สมัครสมาชิก" class="bg-dark text-white p-3">
-            <b-card-text>
-                <label>ชื่อผู้ใช้</label>
-                <b-form-input v-model="username" type="text" required autocomplete="off"></b-form-input>
-                <label>รหัสผ่าน</label>
-                <b-form-input v-model="password" type="password" required autocomplete="off"></b-form-input>
-                <label>ยืนยันรหัสผ่าน</label>
-                <b-form-input v-model="cpassword" type="password" required autocomplete="off"></b-form-input>
-                <label for="auth-user">ยูสเซอร์จีคลับ</label>
-                <b-input v-model="userId" :state="validation" id="auth-user"></b-input>
-                <b-form-invalid-feedback :state="validation">
-                    กรุณาใช้ยูสเซอร์ที่สมัครด้วยระบบใหม่ของจีคลับเท่านั้น
-                </b-form-invalid-feedback>
-                <b-form-valid-feedback :state="validation">
-                    รหัสใช้งานสามารถใช้งานได้
-                </b-form-valid-feedback>
-                <label>รหัสผ่านจีคลับ</label>
-                <b-form-input v-model="gclub_pass" type="password" required autocomplete="off"></b-form-input>
-                <div class="text-light" style="font-size:12px;">
-                    หากรหัสผ่านที่ไม่ตรงกับจีคลับระบบจะไม่สามารถใช้งานได้
-                </div>
-            </b-card-text>
-            <b-button type="submit" block variant="success">สมัครสมาชิก</b-button>
-            <br>
-            <center><a @click="goto('/')" class="btn btn-primary btn-block">เข้าสู่ระบบ</a></center>
-        </b-card>
-        </form>
+        <b-row>
+            <b-col md="6" offset-md="3" class="animated zoomIn mt-5">
+                <form v-on:submit.prevent="register">
+                <b-card title="สมัครสมาชิก" class="bg-dark-3 p-3"  style="border:none;" sub-title="กรุณากรอกข้อมูลให้ครบทุกช่อง">
+                    <b-card-text>
+                        <label>ชื่อผู้ใช้</label>
+                        <b-form-input v-model="username" type="text" required autocomplete="off"></b-form-input>
+                        <br>
+                        <b-form-group
+                        id="fieldset-1"
+                        label="รหัสผ่าน"
+                        label-for="input-1"
+                        :invalid-feedback="invalidFeedback"
+                        :valid-feedback="validFeedback"
+                        :state="passtate"
+                        >
+                        <b-form-input v-model="password" :state="passtate" trim type="password" required autocomplete="off" aria-invalid="true" aria-describedby="input-pass-help input-pass-feedback"></b-form-input>
+                        </b-form-group>
+                        <label>ยืนยันรหัสผ่าน</label>
+                        <b-form-input v-model="cpassword" type="password"  required autocomplete="off"></b-form-input>
+                        <br>
+                        <label for="auth-user">ยูสเซอร์จีคลับ</label>
+                        <b-input v-model="userId" :state="validation" id="auth-user" aria-invalid="true" aria-describedby="input-gclub-help input-gclub-feedback"></b-input>
+                        <b-form-invalid-feedback id="input-gclub-feedback">
+                            กรุณาใช้ยูสเซอร์ที่สมัครด้วยระบบใหม่ของจีคลับเท่านั้น
+                        </b-form-invalid-feedback>
+                        <b-form-valid-feedback id="input-gclub-help">
+                            รหัสใช้งานสามารถใช้งานได้
+                        </b-form-valid-feedback>
+                        <label>รหัสผ่านจีคลับ</label>
+                        <b-form-input v-model="gclub_pass" type="password" required autocomplete="off"></b-form-input>
+                        <div class="text-light" style="font-size:12px;">
+                            หากรหัสผ่านที่ไม่ตรงกับจีคลับระบบจะไม่สามารถใช้งานได้
+                        </div>
+                    </b-card-text>
+                    <b-button type="submit" block variant="primary">สมัครสมาชิก</b-button>
+                    <br>หากคุณมีรหัสผ่านอยู่แล้วจะมาสมัครทำไม ? เข้าสู่ระบบเลย <b-button @click="goto('/Login')" size="sm" variant="outline-primary">คลิ๊กที่นี่</b-button>
+                </b-card>
+                </form>
+            </b-col>
+        </b-row>
     </b-container>
 </template>
 
@@ -73,23 +84,52 @@ export default {
     },
     computed: {
       validation() {
-        if(this.userId.length === 7){
+        // console.log(8-this.userId.length)
+        if(8-this.userId.length<2){
             var data = this.userId.toString();
             var datas = data.substring(0, 4);
             var datax = datas.toUpperCase();
             var user = this.alluser;
             var find = user.indexOf(datax);
-           if(find != -1){
+            if(find != -1){
                 this.submit = true;
                 return true;
             }else{
                 this.submit = false;
                 return false;
             }
-        }else{
+        }else {
             this.submit = false;
             return false;
         }
+      },passtate() {
+          if(this.password.length>6) {
+                const re=new RegExp("([A-Za-z0-9]{6,20})");
+                if(!re.test(this.password))
+                {
+                    this.submit = false;
+                    return false;
+                } else {
+                    this.submit = true;
+                    return true;
+                }
+
+        } else {
+                    this.submit = false;
+                    return false;
+                }
+      },
+       invalidFeedback() {
+        if (this.password.length > 6) {
+          return ''
+        } else if (this.password.length > 0) {
+          return 'รหัสผ่านต้องมีตัวเลข หรือ ตัวหนังสือภาษอังกฤษ มากกว่า 6 ตัวอักษร ห้ามมีเครื่องหมาย'
+        } else {
+          return ''
+        }
+      },
+      validFeedback() {
+        return this.passtate === true ? 'รหัสผ่านสามารถใช้งานได้' : ''
       }
     },
     methods:{
@@ -105,6 +145,7 @@ export default {
             })
         },
         register(){
+
             if(this.username && this.password && this.cpassword && this.userId && this.gclub_pass){
                 if(this.submit === true){
                     if(this.cpassword === this.password){
@@ -144,13 +185,8 @@ export default {
             }else{
                 this.notify('กรุณากรอกข้อมูลให้ครบทุกช่อง','warning')
             }
-        }
+        },
+        
     }
 }
 </script>
-
-<style scope>
-    body{
-        background: #222;
-    }
-</style>
