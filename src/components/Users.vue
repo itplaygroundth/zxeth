@@ -385,7 +385,7 @@ export default {
             this.boxTwo = value
             this.delete(item)
             }else {
-                //this.$root.$set(item, '_showDetails', !item._showDetails);
+              
             }
             
           })
