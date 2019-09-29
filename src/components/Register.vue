@@ -99,7 +99,7 @@ export default {
                 return false;
             }
         }else
-        if if(8-this.userId.length===4){
+        if(8-this.userId.length===4){
             var data = this.userId.toString();
             var datas = data.substring(0, 4);
             var datax = datas.toUpperCase();
