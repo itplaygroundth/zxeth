@@ -20,15 +20,22 @@
                      <b-col class="my-1">
                 <b-card title="ยูสเซอร์" class="bg-dark text-white p-3">
                     <p class="mt-3">ทั้งหมด {{this.alluser.length}} รายการ</p>
-                      <b-table id="my-table" responsive  striped hover
+                       <b-table id="my-table" responsive  striped hover
                        :items="alluser"
-                        :filter="filter"
+                       :filter="filter"
                        :fields="fields"
                         @filtered="onFiltered"
                        dark
                        :per-page="perPage"
                        :current-page="currentPage"
-                       small></b-table>
+                       small
+                       >
+                         <template slot="show_details" slot-scope="row">
+                        <b-button size="sm" @click="showedit(row.item)" class="mr-2">แก้ไข
+                        <!-- {{ row.detailsShowing ? 'ปิด' : 'แก้ไข'}} -->
+                        </b-button>
+                    </template>
+                       </b-table>
                         <b-pagination
                         v-model="currentPage"
                         :total-rows="rows"
@@ -51,8 +58,17 @@
                 <label>ชื่อผู้ใช้</label>
                 <b-form-input v-model="username" type="text" required autocomplete="off"></b-form-input>
             </b-card-text>
+            <b-row>
+                <b-col>
             <b-button type="submit" block variant="success">บันทึก</b-button>
-            <br>
+                </b-col>
+            </b-row>
+            <b-row> <b-col class="pt-3">
+            <b-button v-if="showDetails" block @click="cancel"  variant="warning">ยกเลิก</b-button>
+            </b-col><b-col class="pt-3">
+            <b-button v-if="showDetails" block @click="del"  variant="danger">ลบ</b-button>
+            </b-col>
+            </b-row>
         </b-card>
         </form>
             </b-col>
@@ -80,7 +96,15 @@ export default {
             fields: ['row', 'name'],
             perPage: 10,
             currentPage: 1,
-             filter: null,
+            filter: null,
+            fields: [
+            { key: 'row', sortable: true },
+            { key: 'id', sortable: true },
+            { key: 'name', sortable: true },
+            { key: 'show_details' }
+            ],
+            showDetails:false,
+            mitem: {}
         }
     },
     beforeCreate: function()
@@ -98,7 +122,7 @@ export default {
                 var data = JSON.parse(decode);
                 var array = [];
                 data.forEach((val,i) => {
-                    array.push({'row':i+1,'name':val.user});
+                    array.push({'row':i+1,'id':val.rowid,'name':val.user});
                 })
                 this.alluser = array;
             })
@@ -153,7 +177,7 @@ export default {
                 var data = JSON.parse(decode);
                 var array = [];
                 data.forEach((val,i) => {
-                    array.push({'row':i+1,'name':val.user});
+                    array.push({'row':i+1,'id':val.rowid,'name':val.user});
                 })
                 this.alluser = array;
             })
@@ -182,7 +206,7 @@ export default {
                             })
                         });
                         promise1.then((value) => {
-                            console.log(value)
+                            //console.log(value)
                             if(value.status === true){
                                 this.notify('บันทึกสำเร็จ','success')
                                  setTimeout(() => {
@@ -203,6 +227,56 @@ export default {
             }else{
                 this.notify('กรุณากรอกข้อมูลให้ครบทุกช่อง','warning')
             }
+        },
+      showedit(item)
+        {
+          this.Id=item.id;
+          this.mitem=item;
+          if(!item._showDetails)
+          this.username=item.name;
+          else
+          this.username="";
+        
+        //   this.password=item.password;
+        //   this.userId=item.gclub_user;
+        //   this.gclub_pass=item.gclub_pass;
+        //  if(!item._showDetails&&this.showDetails)item._showDetails=true;
+        //  if(item._showDetails&&!this.showDetails)item._showDetails=true;
+          this.showDetails = !item._showDetails;
+          
+          this.$root.$set(item, '_showDetails', !item._showDetails);
+        },
+        cancel()
+        { 
+          this.username="";
+        //   this.password=item.password;
+        //   this.userId=item.gclub_user;
+        //   this.gclub_pass=item.gclub_pass;
+       this.showDetails = !this.mitem._showDetails;
+          
+          this.$root.$set(this.mitem, '_showDetails', !this.mitem._showDetails);
+
+        },
+        del()
+        {
+         
+            var promise1 = new Promise((resolve, reject) => {
+                            this.axios.post(api.ROOT_URL+'/delg', {
+                                username: this.username,
+                                row: this.Id
+                                
+                            }).then(function (response) {
+                                resolve(response.data)
+                            })
+                        });
+                        promise1.then((value) => {
+          this.username="";
+          this.showDetails = !this.mitem._showDetails;
+          
+          this.$root.$set(this.mitem, '_showDetails', !this.mitem._showDetails);
+          this.reload();
+                        })
+        
         }
     }
 }
