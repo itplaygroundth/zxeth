@@ -98,7 +98,22 @@ export default {
                 this.submit = false;
                 return false;
             }
-        }else {
+        }else
+        if if(8-this.userId.length===4){
+            var data = this.userId.toString();
+            var datas = data.substring(0, 4);
+            var datax = datas.toUpperCase();
+            var user = this.alluser;
+            var find = user.indexOf(datas);
+            if(find != -1){
+                this.submit = true;
+                return true;
+            }else{
+                this.submit = false;
+                return false;
+            }
+        }else
+        {
             this.submit = false;
             return false;
         }
