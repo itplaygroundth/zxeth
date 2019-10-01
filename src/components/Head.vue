@@ -36,22 +36,22 @@
 <script>
 export default {
   props: { currenPath: String },
-  data() {
+  data () {
     return {
-      currentPath: "",
+      currentPath: '',
       active: true
     };
   },
   methods: {
-    goto(url) {
-      this.$router.replace(url);
+    goto (url) {
+      this.$router.replace(url)
     },
-    logout() {
-      this.$store.set("loggedIn", false);
+    logout () {
+      this.$store.set('loggedIn', false)
       setTimeout(() => {
-        this.$router.push("Login");
-      }, 1500);
+        this.$router.push('Login');
+      }, 1500)
     }
   }
-};
+}
 </script>
