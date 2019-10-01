@@ -5,15 +5,15 @@ import Vuex from 'vuex'
 import pathify from './pathify'
 
 // import helper function
-import { make } from 'vuex-pathify'
+import {
+  make
+} from 'vuex-pathify'
 
 // setup store
 const state = {
   roomid: '',
   tab: null,
-  auth: {
-    loggedIn: false
-  },
+  loggedIn: false,
   cuurentPath: Object
 }
 const mutations = make.mutations(state)
