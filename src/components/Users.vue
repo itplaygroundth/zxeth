@@ -34,10 +34,25 @@
                         {{ row.detailsShowing ? 'ปิด' : 'แก้ไข'}}
                         </b-button>
                     </template>
+                    <template slot="userstatus" slot-scope="row">
+                        <b-button size="sm" @click="lock(row.item)" class="mr-2">
+                        {{ row.item.userstatus == 1 ? 'ใช้งาน'  : 'ล๊อค'}}
+                        </b-button>
+                    </template>
                     <template slot="row-details" slot-scope="row">
                     <b-container>
                         <form v-on:submit.prevent="register(row.item)">
                         <b-card class="bg-dark text-white p-3">
+                            <!-- <b-card-text>
+                            <b-form-group
+                            id="fieldset-0"
+                            label="สถานะ"
+                            label-for="input-0"
+                            >
+                            <b-form-select v-model="status" :options="options"></b-form-select>
+                            </b-form-group>
+                            </b-card-text>
+                            <br>-->
                             <b-card-text>
                             <b-form-group
                             id="fieldset-0"
@@ -144,6 +159,7 @@ export default {
             alerttext: '',
             submit: false,
             alluser: [],
+            userstatus: 0,
             fields: [
             { key: 'id', sortable: true },
             { key: 'username', sortable: true },
@@ -151,14 +167,19 @@ export default {
             { key: 'gclub_user', sortable: true },
             { key: 'reg_date', sortable: true },
             { key: 'active_date', sortable: true },
-            { key: 'show_details' }
+            { key: 'show_details' },
+            { key: 'userstatus' }
             ],
             perPage: 10,
             currentPage: 1,
             filter: null,
             sortBy: 'reg_date',
             sortDesc: false,
-            showDetails:false
+            showDetails:false,
+             options: [
+                { value: 0, text: 'ไม่ทำงาน' },
+                { value: 1, text: 'ทำงาน' }
+             ]
         }
     },
     beforeCreate: function()
@@ -392,13 +413,19 @@ export default {
           .catch(err => {
             // An error occurred
           })
+         },
+      lock(item) {
+           this.axios.post(api.ROOT_URL+'/setstatus', {
+                                userid:item.id,status:1
+                            })
+          
       },
-        delete(item)
+      delete(item)
         {
             // console.log(item);
             var promise1 = new Promise((resolve, reject) => {
                             this.axios.post(api.ROOT_URL+'/deluser', {
-                                id:this.userId,
+                                id:item.id,
                             }).then(function (response) {
                                 resolve(response.data)
                             })

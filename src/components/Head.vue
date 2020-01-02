@@ -40,7 +40,7 @@ export default {
     return {
       currentPath: '',
       active: true
-    };
+    }
   },
   methods: {
     goto (url) {
@@ -49,7 +49,7 @@ export default {
     logout () {
       this.$store.set('loggedIn', false)
       setTimeout(() => {
-        this.$router.push('Login');
+        this.$router.push('Login')
       }, 1500)
     }
   }

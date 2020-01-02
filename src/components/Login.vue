@@ -37,8 +37,8 @@
 </template>
 
 <script>
-import { setTimeout } from "timers";
-import api from "../backend";
+import { setTimeout } from 'timers'
+// import api from '../backend'
 /* eslint-disable */
 export default {
   data() {
@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     goto(str) {
-      this.$router.push(str);
+      this.$router.push(str)
     },
     notify(data, classpoint) {
       this.$bvToast.toast(data, {
@@ -72,7 +72,7 @@ export default {
         //     resolve(response.data);
         //   });
         resolve({
-          status: this.username === "admin" && this.password === "admin",
+          status: this.username === "admin" && this.password === "adminzean789!@*",
           userid: this.username
         });
       });
