@@ -417,6 +417,8 @@ export default {
       lock(item) {
            this.axios.post(api.ROOT_URL+'/setstatus', {
                                 userid:item.id,status:1
+                            }).then(response=>{
+                                this.reload()
                             })
           
       },
