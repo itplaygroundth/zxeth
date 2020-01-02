@@ -5,7 +5,7 @@
     <footer>
       <div style="text-align:center;color:#AAA;">
           <hr>
-          Version 1.2 at 05-07-2019
+          Backend Version 2 at 02-01-2020
           <br>
           <br>
           <br>
