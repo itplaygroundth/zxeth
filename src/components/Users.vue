@@ -30,12 +30,12 @@
                         :sort-desc.sync="sortDesc"
                        >
                     <template slot="show_details" slot-scope="row">
-                        <b-button size="sm" @click="showedit(row.item)" class="mr-2">
+                        <b-button size="sm" @click="showedit(row.item)" class="mr-2" variant="info">
                         {{ row.detailsShowing ? 'ปิด' : 'แก้ไข'}}
                         </b-button>
                     </template>
                     <template slot="userstatus" slot-scope="row">
-                        <b-button size="sm" @click="lock(row.item)" class="mr-2">
+                        <b-button size="sm" @click="lock(row.item)" class="mr-2" :variant="checkstatus(row.item.userstatus)">
                         {{ row.item.userstatus == 1 ? 'ใช้งาน'  : 'ล๊อค'}}
                         </b-button>
                     </template>
@@ -298,6 +298,9 @@ export default {
         this.totalRows = filteredItems.length
         this.currentPage = 1
         },
+        checkstatus(state) {
+            return state == 0 ? "danger" : "success"
+        },
         reload() {
             var promise1 = new Promise((resolve, reject) => {
                 this.axios.post(api.ROOT_URL+'/getUsers', {
@@ -416,7 +419,7 @@ export default {
          },
       lock(item) {
            this.axios.post(api.ROOT_URL+'/setstatus', {
-                                userid:item.id,status:1
+                                userid:item.id,status:item.userstatus == 0 ? 1:0
                             }).then(response=>{
                                 this.reload()
                             })
